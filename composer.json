@@ -1,0 +1,16 @@
+{
+    "name": "cblink/aliyun-gateway-backend-auth",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nick",
+            "email": "nick@httpd.cc"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Cblink\\AliyunGateway\\Auth\\": "src/"
+        }
+    }
+}
