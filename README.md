@@ -1,17 +1,16 @@
 ## aliyun gateway backend auth
 
-####  Installation
+### Installation
 
 ```shell script
 composer require cblink/laravel-aliyun-gateway-backend-auth
 ```
 
-#### Configuration
+### Configuration
 
-you need to copy `config/aliyun-gateway.php` file to config folder。
+you need to copy `config/aliyun-gateway.php` file to config folder。Here are some examples
 
-##### aliyun-gateway
-
+##### aliyun-gateway.php
 ```php
 <?php
 
@@ -32,3 +31,22 @@ return [
     ]
 ];
 ```
+
+This Laravel auth driver. You can easily set your auth driver to aliyun-gateway-api
+
+##### auth.php
+
+```php
+<?php
+
+return [
+    // ... 
+    'guards' => [
+        // 
+        'custom' => [
+            'driver' => 'aliyun-gateway-api'
+        ]
+    ]
+];
+```
+

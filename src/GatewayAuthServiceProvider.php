@@ -16,7 +16,7 @@ class GatewayAuthServiceProvider extends ServiceProvider
         $key = $this->app->config->get('aliyun-gateway.key', '');
         $secret = $this->app->config->get('aliyun-gateway.secret', '');
         $userKeys = $this->app->config->get('aliyun-gateway.users', []);
-        Auth::extend('gateway-api', function($app) use($key, $secret, $userKeys){
+        Auth::extend('aliyun-gateway-api', function($app) use($key, $secret, $userKeys){
             return new GatewayGuard($app->request, $key,  $secret, $userKeys);
         });
     }
