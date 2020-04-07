@@ -1,24 +1,24 @@
 <?php
 namespace Cblink\AliyunGateway\Auth;
 
+use Illuminate\Auth\GenericUser;
+use Illuminate\Auth\GuardHelpers;
+use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
 /**
- * Class RequestValidate
- * @package Cblink\Service\Auth
+ * Class GatewayGuard
+ * @package App\Test
  */
-class RequestValidate
+class GatewayGuard implements Guard
 {
+    use GuardHelpers;
+
     /**
      * @var \Illuminate\Http\Request
      */
     protected $request;
-
-    /**
-     * @var AuthUser
-     */
-    protected $user;
 
     /**
      * @var string
@@ -36,6 +36,11 @@ class RequestValidate
     protected $userKeys;
 
     /**
+     * @var Authenticatable
+     */
+    protected $user;
+
+    /**
      * GatewayGuard constructor.
      * @param Request $request
      * @param $key
@@ -51,9 +56,34 @@ class RequestValidate
     }
 
     /**
-     * @return bool
+     * @inheritDoc
      */
-    public function check()
+    /**
+     * @return GenericUser|\Illuminate\Contracts\Auth\Authenticatable|null
+     */
+    public function user()
+    {
+        if (!is_null($this->user)){
+            return $this->user;
+        }
+
+        $user = null;
+
+        if ($this->validate()){
+            $user = array_map(function($val){
+                return $this->request->header($val);
+            }, $this->userKeys);
+
+            $user = new GenericUser($user);
+        }
+
+        return $this->user = $user;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function validate(array $credentials = [])
     {
         if ($this->request->header('x-ca-proxy-signature')){
             // 获取到待验证的签名
@@ -81,11 +111,9 @@ class RequestValidate
                 $this->request->getPathInfo() :
                 $this->request->getPathInfo() . '?' . http_build_query($params);
 
-            $md5Content = base64_encode(md5($this->request->getContent(), true));
-
             // 待签名字符串
             $signString = $this->request->getMethod() . "\n" .
-                ($this->request->getContent() ?: $md5Content) . "\n" .
+                (empty($this->request->getContent()) ? "" : $this->md6Content($this->request->getContent())) . "\n" .
                 (!empty($headerString) ? $headerString : "\n") .
                 urldecode($url);
 
@@ -101,6 +129,15 @@ class RequestValidate
     }
 
     /**
+     * @param $content
+     * @return string
+     */
+    public function md6Content($content)
+    {
+        return base64_encode(md5($content, true));
+    }
+
+    /**
      * @param array $array
      * @return array
      */
@@ -113,17 +150,5 @@ class RequestValidate
         }
         ksort($array);
         return $array;
-    }
-
-    /**
-     * @return AuthUser
-     */
-    public function user()
-    {
-        $user = array_map(function($val){
-            return $this->request->header($val);
-        }, $this->userKeys);
-
-        return new AuthUser($user);
     }
 }
