@@ -111,9 +111,15 @@ class GatewayGuard implements Guard
                 $this->request->getPathInfo() :
                 $this->request->getPathInfo() . '?' . http_build_query($params);
 
+            $content = "";
+
+            if (!empty($this->request->getContent()) && $this->request->getContent() != '[]') {
+                $content = $this->md5Content($this->request->getContent());
+            }
+
             // 待签名字符串
             $signString = $this->request->getMethod() . "\n" .
-                (empty($this->request->getContent()) ? "" : $this->md6Content($this->request->getContent())) . "\n" .
+                $content . "\n" .
                 (!empty($headerString) ? $headerString : "\n") .
                 urldecode($url);
 
@@ -132,7 +138,7 @@ class GatewayGuard implements Guard
      * @param $content
      * @return string
      */
-    public function md6Content($content)
+    public function md5Content($content)
     {
         return base64_encode(md5($content, true));
     }
