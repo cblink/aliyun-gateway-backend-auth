@@ -117,7 +117,7 @@ class GatewayGuard implements Guard
             // 待签名字符串
             $signString = $this->request->getMethod() . "\n" .
                 $content . "\n" .
-                (!empty($headerString) ? $headerString : "\n") .
+                $headerString .
                 urldecode($url);
 
             // 生成待验证的签名
