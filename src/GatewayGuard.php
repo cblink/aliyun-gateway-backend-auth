@@ -36,7 +36,7 @@ class GatewayGuard implements Guard
     protected $userKeys;
 
     /**
-     * @var Authenticatable
+     * @var GenericUser|\Illuminate\Contracts\Auth\Authenticatable
      */
     protected $user;
 
@@ -55,9 +55,6 @@ class GatewayGuard implements Guard
         $this->userKeys = $userKeys;
     }
 
-    /**
-     * @inheritDoc
-     */
     /**
      * @return GenericUser|\Illuminate\Contracts\Auth\Authenticatable|null
      */
