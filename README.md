@@ -3,7 +3,7 @@
 ### Installation
 
 ```shell script
-composer require cblink/laravel-aliyun-gateway-backend-auth
+composer require cblink/aliyun-gateway-backend-auth -vvv
 ```
 
 ### Configuration
